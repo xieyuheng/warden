@@ -838,6 +838,26 @@ warden-`CHAR'."
   (goto-char (point-max))
   (warden-find-file "~/"))
 
+(defun warden-kkk ()
+  (let ()
+    (let ((current default-directory)
+          (parent (warden-parent-directory default-directory)))
+      (when parent
+        (warden-find-file parent)
+        (dired-goto-file current)))
+    (let ((find-name
+           (or entry
+               (dired-get-filename nil t))))
+      (when find-name
+        (if (file-directory-p find-name)
+            (let ()
+              (warden-save-window-settings)
+              (switch-to-buffer
+               (dired-noselect find-name))
+              (warden-mode 1))
+            (let ()
+              (message "'q' to exit warden, and leave the viewing buffer")))))))
+
 (defun warden-next-file ()
   "Move to next file in warden."
   (interactive)
@@ -849,7 +869,8 @@ warden-`CHAR'."
     (when (get-buffer "*warden-prev*")
       (with-current-buffer "*warden-prev*"
         (erase-buffer)))
-    (warden-setup-preview-delayed)))
+    (warden-setup-preview-delayed))
+  (warden-setup))
 
 (defun warden-prev-file ()
   "Move to previous file in warden."
@@ -860,7 +881,8 @@ warden-`CHAR'."
     (when (get-buffer "*warden-prev*")
       (with-current-buffer "*warden-prev*"
         (erase-buffer)))
-    (warden-setup-preview-delayed)))
+    (warden-setup-preview-delayed))
+  (warden-setup))
 
 (defun warden--footer-spec ())
 
